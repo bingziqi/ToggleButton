@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -60,6 +61,19 @@ public class ToggleButton extends View{
 	private RectF rect = new RectF();
 	/** 默认使用动画*/
 	private boolean defaultAnimate = true;
+	/**文字大小**/
+	private int textSize = 35;
+	/**开状态文字颜色**/
+	private int textOnColor = Color.parseColor("#4ebb7f");
+	/**关状态文字颜色**/
+	private int textOffColor = Color.parseColor("#dadbda");
+
+	/**开状态文字内容**/
+	private CharSequence textOnContent = "";
+	/**关状态文字内容**/
+	private CharSequence textOffContent = "";
+	/**文字绘制颜色**/
+	private int textColor = textOffColor;
 
 	/** 是否默认处于打开状态*/
 	private boolean isDefaultOn = false;
@@ -113,9 +127,15 @@ public class ToggleButton extends View{
 		borderWidth = typedArray.getDimensionPixelSize(R.styleable.ToggleButton_tbBorderWidth, borderWidth);
 		defaultAnimate = typedArray.getBoolean(R.styleable.ToggleButton_tbAnimate, defaultAnimate);
 		isDefaultOn = typedArray.getBoolean(R.styleable.ToggleButton_tbAsDefaultOn, isDefaultOn);
+		textOnContent = typedArray.getText(R.styleable.ToggleButton_tbOnText);
+		textOffContent = typedArray.getText(R.styleable.ToggleButton_tbOffText);
+		textOnColor = typedArray.getColor(R.styleable.ToggleButton_tbTextOnColor, textOnColor);
+		textOffColor = typedArray.getColor(R.styleable.ToggleButton_tbTextOffColor, textOffColor);
+		textSize = typedArray.getDimensionPixelSize(R.styleable.ToggleButton_tbTextSize, textSize);
 		typedArray.recycle();
 		
 		borderColor = offBorderColor;
+		textColor = textOffColor;
 
 		if (isDefaultOn) {
 			toggleOn();
@@ -258,7 +278,7 @@ public class ToggleButton extends View{
 			paint.setColor(offColor);
 			canvas.drawRoundRect(rect, cy, cy, paint);
 		}
-		
+	
 		rect.set(spotX - 1 - radius, centerY - radius, spotX + 1.1f + radius, centerY + radius);
 		paint.setColor(borderColor);
 		canvas.drawRoundRect(rect, radius, radius, paint);
@@ -268,6 +288,20 @@ public class ToggleButton extends View{
 		paint.setColor(spotColor);
 		canvas.drawRoundRect(rect, spotR, spotR, paint);
 		
+        if (!TextUtils.isEmpty(textOnContent) && toggleOn) {
+            paint.setColor(textColor);
+            paint.setTextSize(textSize);
+            paint.setTextAlign(Paint.Align.CENTER);
+            canvas.drawText(textOnContent.toString(), spotX, spotMinX + (paint.descent() - paint.ascent()) / 2 - paint.descent(), paint);
+        }
+
+        if (!TextUtils.isEmpty(textOnContent) && !toggleOn) {
+            paint.setColor(textColor);
+            paint.setTextSize(textSize);
+            paint.setTextAlign(Paint.Align.CENTER);
+            canvas.drawText(textOffContent.toString(), spotX, spotMinX + (paint.descent() - paint.ascent()) / 2 - paint.descent(), paint);
+        }
+
 	}
 	
 	/**
@@ -299,6 +333,24 @@ public class ToggleButton extends View{
 		
 		borderColor = Color.rgb(sr, sg, sb);
 		
+		final int tnb = Color.blue(textOnColor);
+		final int tnr = Color.red(textOnColor);
+		final int tng = Color.green(textOnColor);
+
+		final int tfb = Color.blue(textOffColor);
+		final int tfr = Color.red(textOffColor);
+		final int tfg = Color.green(textOffColor);
+
+		int tsb = (int) SpringUtil.mapValueFromRangeToRange(1 - value, 0, 1, tnb, tfb);
+		int tsr = (int) SpringUtil.mapValueFromRangeToRange(1 - value, 0, 1, tnr, tfr);
+		int tsg = (int) SpringUtil.mapValueFromRangeToRange(1 - value, 0, 1, tng, tfg);
+
+		tsb = clamp(tsb, 0, 255);
+		tsr = clamp(tsr, 0, 255);
+		tsg = clamp(tsg, 0, 255);
+
+		textColor = Color.rgb(tsr, tsg, tsb);
+
 		postInvalidate();
 	}
 	

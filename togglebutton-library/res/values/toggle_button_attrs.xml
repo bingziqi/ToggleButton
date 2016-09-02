@@ -8,5 +8,10 @@
         <attr name="tbSpotColor" format="reference|color"/>
         <attr name="tbAnimate" format="reference|boolean"/>
         <attr name="tbAsDefaultOn" format="reference|boolean"/>
+        <attr name="tbOnText" format="reference|string"/>
+        <attr name="tbOffText" format="reference|string"/>
+        <attr name="tbTextSize" format="dimension"/>
+        <attr name="tbTextOnColor" format="reference|color"/>
+        <attr name="tbTextOffColor" format="reference|color"/>
     </declare-styleable>
 </resources>

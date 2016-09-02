@@ -59,7 +59,12 @@
     <com.zcw.togglebutton.ToggleButton
         android:layout_width="90dp"
         android:layout_height="40dp"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        toggle:tbTextSize="18sp"
+        toggle:tbTextOnColor="#ff00"
+        toggle:tbTextOffColor="#0000ff"
+        toggle:tbOnText="开"
+        toggle:tbOffText="关"/>
 
     <com.zcw.togglebutton.ToggleButton
         android:layout_width="54dp"
